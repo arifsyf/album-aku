@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Login - Kenangan Manis</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to right, #ffe6f0, #ffd6ec);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .login-container {
+      background-color: #fff0f5;
+      padding: 40px;
+      border-radius: 20px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+      width: 300px;
+      text-align: center;
+    }
+
+    .login-container h2 {
+      color: #d94f92;
+      margin-bottom: 20px;
+    }
+
+    input[type="text"], input[type="password"] {
+      width: 100%;
+      padding: 12px 10px;
+      margin: 10px 0;
+      border: 1px solid #ffcce5;
+      border-radius: 10px;
+      background-color: #fff;
+    }
+
+    input[type="submit"] {
+      background-color: #ff80b3;
+      color: white;
+      border: none;
+      padding: 12px;
+      width: 100%;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background 0.3s;
+    }
+
+    input[type="submit"]:hover {
+      background-color: #ff4d94;
+    }
+
+    .error-message {
+      color: #d94f4f;
+      margin-top: 10px;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="login-container">
+    <h2>Masuk duluu</h2>
+    <form onsubmit="return handleLogin(event)">
+      <input type="text" id="username" placeholder="Nama Pengguna" required />
+      <input type="password" id="password" placeholder="Kata Sandi" required />
+      <input type="submit" value="Masuk" />
+      <p class="error-message" id="errorMsg">Nama pengguna atau kata sandi salah.</p>
+    </form>
+  </div>
+
+  <script>
+    function handleLogin(event) {
+      event.preventDefault();
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
+      const errorMsg = document.getElementById('errorMsg');
+
+      // Contoh login sederhana
+      if (username === "arta" && password === "221016") {
+        // Redirect ke halaman utama
+        window.location.href = "home.html"; // Ganti dengan halaman utama kamu
+      } else {
+        errorMsg.style.display = "block";
+      }
+    }
+  </script>
+</body>
+</html>

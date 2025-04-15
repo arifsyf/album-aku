@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Kenangan Kita</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to right, #ffe6f0, #ffd6ec);
+      color: #d94f92;
+    }
+
+    header {
+      text-align: center;
+      padding: 30px 20px;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 2em;
+    }
+
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      padding: 20px;
+      max-width: 1200px;
+      margin: auto;
+    }
+
+    .photo-card {
+      background-color: #fff0f5;
+      border-radius: 20px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+      transition: transform 0.3s ease;
+      cursor: pointer;
+    }
+
+    .photo-card:hover {
+      transform: scale(1.03);
+    }
+
+    .photo-card img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+    }
+
+    .photo-caption {
+      padding: 15px;
+      text-align: center;
+    }
+
+    .photo-caption h3 {
+      margin: 0;
+      font-size: 1.1em;
+      color: #c94c8e;
+    }
+
+    .photo-caption p {
+      font-size: 0.9em;
+      color: #8f3b6e;
+      margin-top: 5px;
+    }
+
+    footer {
+      text-align: center;
+      padding: 20px;
+      font-size: 0.9em;
+      color: #aa4f79;
+    }
+
+    /* Modal Styles */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 999;
+      left: 0; top: 0;
+      width: 100%; height: 100%;
+      background-color: rgba(0,0,0,0.7);
+      justify-content: center;
+      align-items: center;
+      animation: fadeIn 0.4s ease;
+    }
+
+    .modal.show {
+      display: flex;
+    }
+
+    .modal-content {
+      position: relative;
+      max-width: 90%;
+      max-height: 90%;
+      animation: zoomIn 0.3s ease;
+    }
+
+    .modal-content img {
+      width: 100%;
+      height: auto;
+      border-radius: 10px;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+      transition: transform 0.3s ease;
+    }
+
+    .modal-content img:hover {
+      transform: scale(1.02);
+    }
+
+    .close {
+      position: absolute;
+      top: 10px; right: 20px;
+      font-size: 30px;
+      color: white;
+      cursor: pointer;
+      transition: transform 0.2s ease;
+    }
+
+    .close:hover {
+      transform: scale(1.2);
+    }
+
+    .download-btn {
+      position: absolute;
+      bottom: 10px;
+      right: 20px;
+      background: #ff69b4;
+      color: white;
+      padding: 10px 15px;
+      border: none;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: bold;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      transition: background 0.3s ease, transform 0.3s ease;
+    }
+
+    .download-btn:hover {
+      background: #ff1493;
+      transform: scale(1.05);
+    }
+
+    /* Animations */
+    @keyframes fadeIn {
+      from {opacity: 0;}
+      to {opacity: 1;}
+    }
+
+    @keyframes zoomIn {
+      from {transform: scale(0.8);}
+      to {transform: scale(1);}
+    }
+  </style>
+</head>
+<body>
+
+<!-- Musik Latar -->
+<audio autoplay loop hidden>
+  <source src="bunga-abadi.mp3" type="audio/mpeg">
+  Browsermu tidak mendukung audio.
+</audio>
+
+<header>
+  <h1>Kenangan Manis Bersamamu 💕</h1>
+  <p>Setiap momen bersamamu adalah bunga yang mekar di hatiku 🌸</p>
+</header>
+
+<section class="gallery">
+  <div class="photo-card" onclick="openModal('foto1.jpg')">
+    <img src="foto1.jpg" alt="Foto 1">
+    <div class="photo-caption">
+      <h3>Awal Bertemu</h3>
+      <p>Hari itu hujan, tapi kamu datang membawa hangat.</p>
+    </div>
+  </div>
+
+  <div class="photo-card" onclick="openModal('foto2.jpg')">
+    <img src="foto2.jpg" alt="Foto 2">
+    <div class="photo-caption">
+      <h3>Kencan Pertama</h3>
+      <p>mau foto boot dulu .</p>
+    </div>
+  </div>
+
+  <div class="photo-card" onclick="openModal('foto3.jpg')">
+    <img src="foto3.jpg" alt="Foto 3">
+    <div class="photo-caption">
+      <h3>Liburan Bersama</h3>
+      <p>Pantai, senja, dan genggaman tanganmu.</p>
+    </div>
+  </div>
+
+  <div class="photo-card" onclick="openModal('foto4.jpg')">
+    <img src="foto4.jpg" alt="Foto 4">
+    <div class="photo-caption">
+      <h3>Surprise Ulang Tahun</h3>
+      <p>Senyummu waktu itu, tak pernah kulupakan.</p>
+    </div>
+  </div>
+</section>
+
+<!-- Modal Zoom -->
+<div id="myModal" class="modal" onclick="closeModal()">
+  <div class="modal-content" onclick="event.stopPropagation()">
+    <span class="close" onclick="closeModal()">&times;</span>
+    <img id="modal-img" src="" alt="Zoom Foto">
+    <a id="download-link" class="download-btn" download>Download Foto</a>
+  </div>
+</div>
+
+<footer>
+  Dibuat dengan cinta 💗 oleh Kita Berdua | © 2025
+</footer>
+
+<script>
+  function openModal(imgSrc) {
+    const modal = document.getElementById("myModal");
+    const modalImg = document.getElementById("modal-img");
+    const downloadLink = document.getElementById("download-link");
+    
+    modal.classList.add("show");
+    modalImg.src = imgSrc;
+    downloadLink.href = imgSrc;
+    downloadLink.download = imgSrc.split('/').pop(); // otomatis pakai nama file
+  }
+
+  function closeModal() {
+    const modal = document.getElementById("myModal");
+    modal.classList.remove("show");
+  }
+</script>
+
+</body>
+</html>
