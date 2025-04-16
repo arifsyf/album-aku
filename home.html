@@ -60,6 +60,15 @@
       color: #8f3b6e;
       margin-top: 5px;
     }
+    .photo-caption button {
+      margin-top: 10px;
+      background: #ff4d6d;
+      color: white;
+      border: none;
+      padding: 5px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
     footer {
       text-align: center;
       padding: 20px;
@@ -139,22 +148,14 @@
       z-index: 9999;
     }
     .love {
-      position: absolute;
-      width: 25px;
-      height: 25px;
-      background-color: #ff4da6;
-      transform: rotate(45deg);
-      animation: fall 5s linear forwards;
-    }
-    .love::before,
-    .love::after {
-      content: '';
-      position: absolute;
-      width: 25px;
-      height: 25px;
-      background-color: #ff4da6;
-      border-radius: 50%;
-    }
+  position: absolute;
+  width: 30px;
+  height: 30px;
+  font-size: 28px;
+  color: #ff69b4;
+  animation: fall 6s linear forwards;
+}
+    
     .love::before {
       top: -12px;
       left: 0;
@@ -173,30 +174,76 @@
         opacity: 0;
       }
     }
+    #progressContainer, #spinner {
+      text-align: center;
+      margin-top: 10px;
+    }
   </style>
 </head>
 <body>
-
 <div class="love-container"></div>
-
 <audio id="bg-music" loop>
   <source src="bunga-abadi.mp3" type="audio/mpeg">
 </audio>
-<div style="text-align:center; margin-top: 10px">
-  <button onclick="document.getElementById('bg-music').play()" style="background: #ff69b4; color: white; padding: 10px 20px; border: none; border-radius: 8px;">Mainkan Lagu 🎵</button>
-</div>
+$1
+  <br><br>
+  <label for="volumeControl">Volume Lagu 🎶</label>
+  <input type="range" id="volumeControl" min="0" max="1" step="0.01" value="1" onchange="setVolume(this.value)" style="width: 200px;">
+  <script>
+  const audio = document.getElementById('bg-music');
 
-<header>
-  <h1>Kenangan Manis Bersamamu 💕</h1>
-  <p>Setiap momen bersamamu adalah bunga yang mekar di hatiku 🌸</p>
-</header>
+  function setVolume(value) {
+    audio.volume = value;
+    localStorage.setItem('volume', value);
+  }
+
+  function togglePlayPause() {
+    if (audio.paused) {
+      audio.play();
+      document.getElementById('playPauseBtn').textContent = '⏸️ Pause';
+    } else {
+      audio.pause();
+      document.getElementById('playPauseBtn').textContent = '▶️ Play';
+    }
+  }
+
+  function muteUnmute() {
+    audio.muted = !audio.muted;
+    document.getElementById('muteBtn').textContent = audio.muted ? '🔈 Unmute' : '🔇 Mute';
+  }
+
+  function resetVolume() {
+    audio.volume = 1;
+    document.getElementById('volumeControl').value = 1;
+    localStorage.setItem('volume', 1);
+  }
+
+  window.addEventListener('DOMContentLoaded', () => {
+    const savedVolume = localStorage.getItem('volume');
+    if (savedVolume !== null) {
+      audio.volume = savedVolume;
+      document.getElementById('volumeControl').value = savedVolume;
+    }
+  });
+</script>
+<div style="margin-top: 10px">
+  <button id="playPauseBtn" onclick="togglePlayPause()" style="background: #ff69b4; color: white; padding: 6px 12px; border: none; border-radius: 6px; margin-right: 6px;">▶️ Play</button>
+  <button id="muteBtn" onclick="muteUnmute()" style="background: #ff69b4; color: white; padding: 6px 12px; border: none; border-radius: 6px; margin-right: 6px;">🔇 Mute</button>
+  <button onclick="resetVolume()" style="background: #ff69b4; color: white; padding: 6px 12px; border: none; border-radius: 6px;">🔁 Reset Volume</button>
+</div>
+</div>
+<!-- Semua fitur telah digabungkan. Scroll ke bawah untuk lihat script yang sudah ditambahkan -->
 
 <section style="text-align:center; padding: 20px;">
   <h2>Upload Foto Kenangan 💗</h2>
-  <input type="file" id="uploadInput" accept="image/*" /><br><br>
+  <input type="file" id="uploadInput" accept="image/*"><br><br>
   <input type="text" id="titleInput" placeholder="Judul Foto" style="padding: 8px; width: 200px; border-radius: 8px; border: 1px solid #ccc;"><br><br>
   <textarea id="captionInput" placeholder="Ceritakan sedikit tentang foto ini..." style="padding: 8px; width: 300px; height: 80px; border-radius: 8px; border: 1px solid #ccc;"></textarea><br><br>
-  <button onclick="uploadToCloudinary()" style="background:#ff69b4;color:white;border:none;padding:10px 20px;border-radius:8px;cursor:pointer;">Upload Foto</button>
+  <button onclick="uploadFoto()" style="background:#ff69b4;color:white;border:none;padding:10px 20px;border-radius:8px;cursor:pointer;">Upload Foto</button>
+  <div id="progressContainer" style="display:none;">
+    <p>Upload: <span id="progressPercent">0%</span></p>
+  </div>
+  <div id="spinner" style="display:none;">⏳ Uploading...</div>
 </section>
 
 <section class="gallery" id="imageGallery"></section>
@@ -205,114 +252,7 @@
   Dibuat dengan cinta 💗 oleh Kita Berdua | © 2025
 </footer>
 
-<script>
-  const firebaseConfig = {
-    apiKey: "AIzaSyBG1-R0sYyxwK6dv7xXEEQQNPH6z_utVos",
-    authDomain: "albumakuu.firebaseapp.com",
-    projectId: "albumakuu",
-    storageBucket: "albumakuu.firebasestorage.app",
-    messagingSenderId: "757106483844",
-    appId: "1:757106483844:web:cb8349d33b8aed2c4b18d1",
-    measurementId: "G-EPYMNR732Y"
-  };
-
-  firebase.initializeApp(firebaseConfig);
-  const db = firebase.firestore();
-
-  async function uploadToCloudinary() {
-    const fileInput = document.getElementById("uploadInput");
-    const titleInput = document.getElementById("titleInput");
-    const captionInput = document.getElementById("captionInput");
-
-    const file = fileInput.files[0];
-    const title = titleInput.value || "Kenangan Baru";
-    const caption = captionInput.value || "Foto kenangan yang baru saja diunggah 💕";
-
-    if (!file) {
-      alert("Pilih file dulu ya!");
-      return;
-    }
-
-    const formData = new FormData();
-    formData.append("file", file);
-    formData.append("upload_preset", "kenangan_foto");
-    const cloudName = "dgd4dxjpv";
-
-    try {
-      const res = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
-        method: "POST",
-        body: formData
-      });
-
-      const data = await res.json();
-
-      await db.collection("galeri").add({
-        title,
-        caption,
-        url: data.secure_url,
-        timestamp: new Date()
-      });
-
-      loadGallery();
-
-      fileInput.value = "";
-      titleInput.value = "";
-      captionInput.value = "";
-
-    } catch (err) {
-      console.error("Upload gagal:", err);
-      alert("Upload gagal. Cek koneksi atau konfigurasi Cloudinary.");
-    }
-  }
-
-  async function loadGallery() {
-    const gallery = document.getElementById("imageGallery");
-    gallery.innerHTML = "";
-    const snapshot = await db.collection("galeri").orderBy("timestamp", "desc").get();
-    snapshot.forEach(doc => {
-      const data = doc.data();
-      const photoCard = document.createElement("div");
-      photoCard.className = "photo-card";
-      photoCard.onclick = () => openModal(data.url);
-
-      photoCard.innerHTML = `
-        <img src="${data.url}" alt="${data.title}">
-        <div class="photo-caption">
-          <h3>${data.title}</h3>
-          <p>${data.caption}</p>
-        </div>
-      `;
-      gallery.appendChild(photoCard);
-    });
-  }
-
-  function openModal(imgSrc) {
-    const modal = document.getElementById("myModal");
-    const modalImg = document.getElementById("modal-img");
-    const downloadLink = document.getElementById("download-link");
-    modal.classList.add("show");
-    modalImg.src = imgSrc;
-    downloadLink.href = imgSrc;
-    downloadLink.download = imgSrc.split('/').pop();
-  }
-
-  function closeModal() {
-    document.getElementById("myModal").classList.remove("show");
-  }
-
-  function createLove() {
-    const love = document.createElement('div');
-    love.classList.add('love');
-    love.style.left = Math.random() * 100 + 'vw';
-    love.style.animationDuration = (Math.random() * 3 + 3) + 's';
-    document.querySelector('.love-container').appendChild(love);
-    setTimeout(() => love.remove(), 6000);
-  }
-  setInterval(createLove, 600);
-
-  loadGallery();
-</script>
-
+<!-- Modal untuk zoom foto -->
 <div id="myModal" class="modal" onclick="closeModal()">
   <div class="modal-content" onclick="event.stopPropagation()">
     <span class="close" onclick="closeModal()">&times;</span>
@@ -321,5 +261,110 @@
   </div>
 </div>
 
-</body>
-</html>
+<script>
+  // Konfigurasi Firebase
+  const firebaseConfig = {
+    apiKey: "AIzaSyBG1-R0sYyxwK6dv7xXEEQQNPH6z_utVos",
+    authDomain: "albumakuu.firebaseapp.com",
+    projectId: "albumakuu",
+    storageBucket: "albumakuu.appspot.com",
+    messagingSenderId: "757106483844",
+    appId: "1:757106483844:web:cb8349d33b8aed2c4b18d1"
+  };
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
+
+  // Kompres gambar menggunakan canvas
+  async function compressImage(file, maxWidth = 1024, quality = 0.7) {
+    return new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          const scale = maxWidth / img.width;
+          canvas.width = maxWidth;
+          canvas.height = img.height * scale;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+          canvas.toBlob((blob) => {
+            resolve(new File([blob], file.name, { type: 'image/jpeg' }));
+          }, 'image/jpeg', quality);
+        };
+        img.src = event.target.result;
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+
+  // Upload gambar
+  async function uploadFoto() {$1
+
+  function createLove() {
+  const love = document.createElement('div');
+  love.classList.add('love');
+  love.textContent = ['💖', '💕', '❤️', '💘', '💞'][Math.floor(Math.random() * 5)];
+  love.style.left = Math.random() * 100 + 'vw';
+  love.style.fontSize = (Math.random() * 16 + 20) + 'px';
+  love.style.animationDuration = (Math.random() * 2 + 3) + 's';
+  document.querySelector('.love-container').appendChild(love);
+    setTimeout(() => love.remove(), 6000);
+  }
+  setInterval(createLove, 600);
+      } else {
+        alert("Upload gagal.");
+      }
+    };
+    xhr.onerror = () => alert("Gagal mengupload ke Cloudinary");
+    xhr.send(formData);
+  }
+
+  // Tampilkan galeri
+  async function loadGallery() {
+    const gallery = document.getElementById("imageGallery");
+    gallery.innerHTML = "";
+    const snapshot = await db.collection("galeri").orderBy("timestamp", "desc").get();
+    snapshot.forEach(doc => {
+      const data = doc.data();
+      const card = document.createElement("div");
+      card.className = "photo-card";
+      card.innerHTML = `
+        <img src="${data.url}" alt="${data.title}" onclick="openModal('${data.url}')">
+        <div class="photo-caption">
+          <h3>${data.title}</h3>
+          <p>${data.caption}</p>
+          <button onclick="hapusFoto('${doc.id}', '${data.public_id}')">Hapus</button>
+        </div>
+      `;
+      gallery.appendChild(card);
+    });
+  }
+
+  async function hapusFoto(docId, publicId) {
+    if (!confirm("Yakin ingin menghapus foto ini?")) return;
+    try {
+      await fetch("https://your-server.com/delete-cloudinary", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({ public_id: publicId })
+      });
+      await db.collection("galeri").doc(docId).delete();
+      loadGallery();
+    } catch (err) {
+      alert("Gagal menghapus foto.");
+      console.error(err);
+    }
+  }
+
+  function openModal(src) {
+    const modal = document.getElementById("myModal");
+    document.getElementById("modal-img").src = src;
+    document.getElementById("download-link").href = src;
+    modal.classList.add("show");
+  }
+  function closeModal() {
+    document.getElementById("myModal").classList.remove("show");
+  }
+
+  loadGallery();
+</script>
