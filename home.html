@@ -193,7 +193,7 @@
 <audio id="bg-music" loop>
   <source src="bunga-abadi.mp3" type="audio/mpeg">
 </audio>
-$1
+
   <br><br>
   <label for="volumeControl">Volume Lagu 🎶</label>
   <input type="range" id="volumeControl" min="0" max="1" step="0.01" value="1" onchange="setVolume(this.value)" style="width: 200px;">
@@ -228,7 +228,10 @@ $1
 
   window.addEventListener('DOMContentLoaded', () => {
     document.getElementById('playPauseBtn').addEventListener('click', () => {
-      if (audio.readyState >= 2) audio.play();
+      audio.play().catch(err => {
+        alert('Gagal memutar lagu. Coba klik lagi atau cek file audio.');
+        console.error(err);
+      });
     });
     const savedVolume = localStorage.getItem('volume');
     if (savedVolume !== null) {
