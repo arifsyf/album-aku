@@ -148,14 +148,22 @@
       z-index: 9999;
     }
     .love {
-  position: absolute;
-  width: 30px;
-  height: 30px;
-  font-size: 28px;
-  color: #ff69b4;
-  animation: fall 6s linear forwards;
-}
-    
+      position: absolute;
+      width: 25px;
+      height: 25px;
+      background-color: #ff4da6;
+      transform: rotate(45deg);
+      animation: fall 5s linear forwards;
+    }
+    .love::before,
+    .love::after {
+      content: '';
+      position: absolute;
+      width: 25px;
+      height: 25px;
+      background-color: #ff4da6;
+      border-radius: 50%;
+    }
     .love::before {
       top: -12px;
       left: 0;
@@ -298,16 +306,58 @@
   }
 
   // Upload gambar
-  async function uploadFoto() {$1
+  async function uploadFoto() {
+    const fileInput = document.getElementById("uploadInput");
+    const titleInput = document.getElementById("titleInput");
+    const captionInput = document.getElementById("captionInput");
+    const file = fileInput.files[0];
+    const title = titleInput.value || "Kenangan Baru";
+    const caption = captionInput.value || "Momen manis 💗";
+    if (!file) return alert("Pilih file terlebih dahulu.");
+
+    document.getElementById("spinner").style.display = "block";
+    document.getElementById("progressContainer").style.display = "block";
+
+    const compressedFile = await compressImage(file);
+    const formData = new FormData();
+    formData.append("file", compressedFile);
+    formData.append("upload_preset", "kenangan_foto");
+    const cloudName = "dgd4dxjpv";
+
+    const xhr = new XMLHttpRequest();
+    xhr.open("POST", `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, true);
+
+    xhr.upload.onprogress = function (e) {
+      if (e.lengthComputable) {
+        const percent = Math.floor((e.loaded / e.total) * 100);
+        document.getElementById("progressPercent").textContent = percent + "%";
+      }
+    };
+
+    xhr.onload = async function () {
+      if (xhr.status === 200) {
+        const data = JSON.parse(xhr.responseText);
+        await db.collection("galeri").add({
+          title,
+          caption,
+          url: data.secure_url,
+          public_id: data.public_id,
+          timestamp: new Date()
+        });
+        fileInput.value = "";
+        titleInput.value = "";
+        captionInput.value = "";
+        document.getElementById("spinner").style.display = "none";
+        document.getElementById("progressContainer").style.display = "none";
+        document.getElementById("progressPercent").textContent = "0%";
+        loadGallery();
 
   function createLove() {
-  const love = document.createElement('div');
-  love.classList.add('love');
-  love.textContent = ['💖', '💕', '❤️', '💘', '💞'][Math.floor(Math.random() * 5)];
-  love.style.left = Math.random() * 100 + 'vw';
-  love.style.fontSize = (Math.random() * 16 + 20) + 'px';
-  love.style.animationDuration = (Math.random() * 2 + 3) + 's';
-  document.querySelector('.love-container').appendChild(love);
+    const love = document.createElement('div');
+    love.classList.add('love');
+    love.style.left = Math.random() * 100 + 'vw';
+    love.style.animationDuration = (Math.random() * 3 + 3) + 's';
+    document.querySelector('.love-container').appendChild(love);
     setTimeout(() => love.remove(), 6000);
   }
   setInterval(createLove, 600);
