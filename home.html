@@ -261,39 +261,49 @@
     100% { left: 100%; }
   }
 </style>
+  <style>
+    .loading-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.8);
+      z-index: 9999;
+      justify-content: center;
+      align-items: center;
+      font-size: 24px;
+      color: #ff69b4;
+      font-weight: bold;
+    }
+    .loading-overlay.show {
+      display: flex;
+    }
+  </style>
 </head>
 <body>
+<div class="loading-overlay" id="loadingOverlay">💗 Membuka Kenangan...</div>
 <div class="moving-text">Kenangan Manis Kita 💖</div>
 <audio id="bg-music" autoplay loop>
   <source src="bunga-abadi.mp3" type="audio/mpeg">
 </audio>
 <script>
-  document.addEventListener("DOMContentLoaded", () => {
-    const cloudContainer = document.getElementById("cloud-container");
-    for (let i = 0; i < 10; i++) {
-      const cloud = document.createElement("div");
-      cloud.classList.add("cloud");
-      cloud.style.width = `${100 + Math.random() * 200}px`;
-      cloud.style.height = `${50 + Math.random() * 100}px`;
-      cloud.style.top = `${Math.random() * 50}%`;
-      cloud.style.left = `${-300 + Math.random() * 100}px`;
-      cloud.style.animationDuration = `${40 + Math.random() * 40}s`;
-      cloudContainer.appendChild(cloud);
-    }
-    const starContainer = document.getElementById("star-container");
-    for (let i = 0; i < 100; i++) {
-      const star = document.createElement("div");
-      star.classList.add("star");
-      star.style.top = Math.random() * 100 + "%";
-      star.style.left = Math.random() * 100 + "%";
-      star.style.animationDuration = (Math.random() * 3 + 2) + "s";
-      starContainer.appendChild(star);
-    }
-    const audio = document.getElementById("bg-music");
-    audio.volume = 0.5;
-    audio.play().catch(err => {
-      console.warn("Autoplay dicegah oleh browser:", err);
-    });
+document.addEventListener("DOMContentLoaded", () => {
+  const overlay = document.getElementById("loadingOverlay");
+overlay.classList.add("show");
+setTimeout(() => {
+  overlay.classList.remove("show");
+}, 1800);
+  const audio = document.getElementById("bg-music");
+audio.volume = 0.5;
+if (localStorage.getItem("autoPlayMusic") === "yes") {
+  audio.play().then(() => {
+    localStorage.removeItem("autoPlayMusic");
+  }).catch(err => {
+    console.warn("Autoplay gagal:", err);
+  });
+}
   });
 </script>
 
