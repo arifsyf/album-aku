@@ -12,17 +12,14 @@
       background: linear-gradient(to right, #ffe6f0, #ffd6ec);
       color: #d94f92;
     }
-
     header {
       text-align: center;
       padding: 30px 20px;
     }
-
     header h1 {
       margin: 0;
       font-size: 2em;
     }
-
     .gallery {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -31,7 +28,6 @@
       max-width: 1200px;
       margin: auto;
     }
-
     .photo-card {
       background-color: #fff0f5;
       border-radius: 20px;
@@ -40,64 +36,56 @@
       transition: transform 0.3s ease;
       cursor: pointer;
     }
-
     .photo-card:hover {
       transform: scale(1.03);
     }
-
     .photo-card img {
       width: 100%;
       height: 200px;
       object-fit: cover;
     }
-
     .photo-caption {
       padding: 15px;
       text-align: center;
     }
-
     .photo-caption h3 {
       margin: 0;
       font-size: 1.1em;
       color: #c94c8e;
     }
-
     .photo-caption p {
       font-size: 0.9em;
       color: #8f3b6e;
       margin-top: 5px;
     }
-
     footer {
       text-align: center;
       padding: 20px;
       font-size: 0.9em;
       color: #aa4f79;
     }
-
     .modal {
       display: none;
       position: fixed;
       z-index: 999;
-      left: 0; top: 0;
-      width: 100%; height: 100%;
+      left: 0; 
+      top: 0;
+      width: 100%; 
+      height: 100%;
       background-color: rgba(0,0,0,0.7);
       justify-content: center;
       align-items: center;
       animation: fadeIn 0.4s ease;
     }
-
     .modal.show {
       display: flex;
     }
-
     .modal-content {
       position: relative;
       max-width: 90%;
       max-height: 90%;
       animation: zoomIn 0.3s ease;
     }
-
     .modal-content img {
       width: 100%;
       height: auto;
@@ -105,24 +93,21 @@
       box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
       transition: transform 0.3s ease;
     }
-
     .modal-content img:hover {
       transform: scale(1.02);
     }
-
     .close {
       position: absolute;
-      top: 10px; right: 20px;
+      top: 10px; 
+      right: 20px;
       font-size: 30px;
       color: white;
       cursor: pointer;
       transition: transform 0.2s ease;
     }
-
     .close:hover {
       transform: scale(1.2);
     }
-
     .download-btn {
       position: absolute;
       bottom: 10px;
@@ -137,23 +122,19 @@
       box-shadow: 0 4px 8px rgba(0,0,0,0.2);
       transition: background 0.3s ease, transform 0.3s ease;
     }
-
     .download-btn:hover {
       background: #ff1493;
       transform: scale(1.05);
     }
-
     @keyframes fadeIn {
       from {opacity: 0;}
       to {opacity: 1;}
     }
-
     @keyframes zoomIn {
       from {transform: scale(0.8);}
       to {transform: scale(1);}
     }
-
-    /* Love Rain Style */
+    /* ===== EFFECT LOVE ===== */
     .love-container {
       position: fixed;
       top: 0;
@@ -163,37 +144,34 @@
       pointer-events: none;
       overflow: hidden;
       z-index: 9999;
+      /* Tambahkan background debug sementara (hilangkan nanti jika sudah berfungsi) */
+      /* background: rgba(0, 255, 0, 0.1); */
     }
-
     .love {
       position: absolute;
-      width: 20px;
-      height: 20px;
+      width: 25px;
+      height: 25px;
       background-color: #ff4da6;
       transform: rotate(45deg);
-      animation: fall 5s linear infinite;
+      animation: fall 5s linear forwards;
     }
-
     .love::before,
     .love::after {
       content: '';
       position: absolute;
-      width: 20px;
-      height: 20px;
+      width: 25px;
+      height: 25px;
       background-color: #ff4da6;
       border-radius: 50%;
     }
-
     .love::before {
-      top: -10px;
+      top: -12px;
       left: 0;
     }
-
     .love::after {
-      left: -10px;
+      left: -12px;
       top: 0;
     }
-
     @keyframes fall {
       0% {
         transform: translateY(-100px) rotate(45deg);
@@ -204,11 +182,23 @@
         opacity: 0;
       }
     }
+    @media (max-width: 768px) {
+      .love, .love::before, .love::after {
+        width: 30px;
+        height: 30px;
+      }
+      .love::before {
+        top: -15px;
+      }
+      .love::after {
+        left: -15px;
+      }
+    }
   </style>
 </head>
 <body>
 
-<!-- Love Container (Hujan Love) -->
+<!-- Container untuk efek hujan love -->
 <div class="love-container"></div>
 
 <!-- Musik Latar -->
@@ -223,7 +213,6 @@
 </header>
 
 <section class="gallery">
-  <!-- Foto-foto -->
   <div class="photo-card" onclick="openModal('foto1.jpg')">
     <img src="foto1.jpg" alt="Foto 1">
     <div class="photo-caption">
@@ -254,7 +243,6 @@
   </div>
 </section>
 
-<!-- Modal Zoom -->
 <div id="myModal" class="modal" onclick="closeModal()">
   <div class="modal-content" onclick="event.stopPropagation()">
     <span class="close" onclick="closeModal()">&times;</span>
@@ -272,32 +260,29 @@
     const modal = document.getElementById("myModal");
     const modalImg = document.getElementById("modal-img");
     const downloadLink = document.getElementById("download-link");
-
     modal.classList.add("show");
     modalImg.src = imgSrc;
     downloadLink.href = imgSrc;
     downloadLink.download = imgSrc.split('/').pop();
   }
-
   function closeModal() {
     const modal = document.getElementById("myModal");
     modal.classList.remove("show");
   }
-
-  // Script Hujan Love
+  
+  // Fungsi efek hujan love dengan debug console
   function createLove() {
+    console.log('Membuat love'); // Debug: periksa di console smartphone jika memungkinkan
     const love = document.createElement('div');
     love.classList.add('love');
     love.style.left = Math.random() * 100 + 'vw';
     love.style.animationDuration = (Math.random() * 3 + 3) + 's';
     document.querySelector('.love-container').appendChild(love);
-
     setTimeout(() => {
       love.remove();
-    }, 5000);
+    }, 6000);
   }
-
-  setInterval(createLove, 300);
+  setInterval(createLove, 600);
 </script>
 
 </body>
