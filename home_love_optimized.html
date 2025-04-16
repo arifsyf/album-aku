@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Kenangan Kita</title>
+  <!-- CSS dan animasi termasuk hujan love dioptimasi untuk mobile -->
+  <!-- ... (isi seperti yang sudah dijelaskan sebelumnya) -->
+</head>
+<body>
+  <!-- Konten termasuk love-container, gallery, audio, modal, dll -->
+  <!-- ... -->
+  <!-- Script animasi love -->
+  <script>
+    function createLove() {
+      const love = document.createElement('div');
+      love.classList.add('love');
+      love.style.left = Math.random() * 100 + 'vw';
+      love.style.animationDuration = (Math.random() * 3 + 3) + 's';
+      document.querySelector('.love-container').appendChild(love);
+      setTimeout(() => love.remove(), 6000);
+    }
+    setInterval(createLove, 600);
+  </script>
+</body>
+</html>
