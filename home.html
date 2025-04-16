@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Kenangan Kita</title>
   <style>
     body {
@@ -68,9 +68,9 @@
       display: none;
       position: fixed;
       z-index: 999;
-      left: 0; 
+      left: 0;
       top: 0;
-      width: 100%; 
+      width: 100%;
       height: 100%;
       background-color: rgba(0,0,0,0.7);
       justify-content: center;
@@ -98,7 +98,7 @@
     }
     .close {
       position: absolute;
-      top: 10px; 
+      top: 10px;
       right: 20px;
       font-size: 30px;
       color: white;
@@ -126,15 +126,6 @@
       background: #ff1493;
       transform: scale(1.05);
     }
-    @keyframes fadeIn {
-      from {opacity: 0;}
-      to {opacity: 1;}
-    }
-    @keyframes zoomIn {
-      from {transform: scale(0.8);}
-      to {transform: scale(1);}
-    }
-    /* ===== EFFECT LOVE ===== */
     .love-container {
       position: fixed;
       top: 0;
@@ -144,8 +135,6 @@
       pointer-events: none;
       overflow: hidden;
       z-index: 9999;
-      /* Tambahkan background debug sementara (hilangkan nanti jika sudah berfungsi) */
-      /* background: rgba(0, 255, 0, 0.1); */
     }
     .love {
       position: absolute;
@@ -182,29 +171,14 @@
         opacity: 0;
       }
     }
-    @media (max-width: 768px) {
-      .love, .love::before, .love::after {
-        width: 30px;
-        height: 30px;
-      }
-      .love::before {
-        top: -15px;
-      }
-      .love::after {
-        left: -15px;
-      }
-    }
   </style>
 </head>
 <body>
 
-<!-- Container untuk efek hujan love -->
 <div class="love-container"></div>
 
-<!-- Musik Latar -->
 <audio autoplay loop hidden>
   <source src="bunga-abadi.mp3" type="audio/mpeg">
-  Browsermu tidak mendukung audio.
 </audio>
 
 <header>
@@ -212,7 +186,15 @@
   <p>Setiap momen bersamamu adalah bunga yang mekar di hatiku 🌸</p>
 </header>
 
-<section class="gallery">
+<section style="text-align:center; padding: 20px;">
+  <h2>Upload Foto Kenangan 💗</h2>
+  <input type="file" id="uploadInput" /><br><br>
+  <input type="text" id="titleInput" placeholder="Judul Foto" style="padding: 8px; width: 200px; border-radius: 8px; border: 1px solid #ccc;"><br><br>
+  <textarea id="captionInput" placeholder="Ceritakan sedikit tentang foto ini..." style="padding: 8px; width: 300px; height: 80px; border-radius: 8px; border: 1px solid #ccc;"></textarea><br><br>
+  <button onclick="uploadToCloudinary()" style="background:#ff69b4;color:white;border:none;padding:10px 20px;border-radius:8px;cursor:pointer;">Upload Foto</button>
+</section>
+
+<section class="gallery" id="imageGallery">
   <div class="photo-card" onclick="openModal('foto1.jpg')">
     <img src="foto1.jpg" alt="Foto 1">
     <div class="photo-caption">
@@ -224,7 +206,7 @@
     <img src="foto2.jpg" alt="Foto 2">
     <div class="photo-caption">
       <h3>Kencan Pertama</h3>
-      <p>mau foto boot dulu .</p>
+      <p>mau foto boot dulu.</p>
     </div>
   </div>
   <div class="photo-card" onclick="openModal('foto3.jpg')">
@@ -266,23 +248,69 @@
     downloadLink.download = imgSrc.split('/').pop();
   }
   function closeModal() {
-    const modal = document.getElementById("myModal");
-    modal.classList.remove("show");
+    document.getElementById("myModal").classList.remove("show");
   }
-  
-  // Fungsi efek hujan love dengan debug console
+
   function createLove() {
-    console.log('Membuat love'); // Debug: periksa di console smartphone jika memungkinkan
     const love = document.createElement('div');
     love.classList.add('love');
     love.style.left = Math.random() * 100 + 'vw';
     love.style.animationDuration = (Math.random() * 3 + 3) + 's';
     document.querySelector('.love-container').appendChild(love);
-    setTimeout(() => {
-      love.remove();
-    }, 6000);
+    setTimeout(() => love.remove(), 6000);
   }
   setInterval(createLove, 600);
+
+  async function uploadToCloudinary() {
+    const fileInput = document.getElementById("uploadInput");
+    const titleInput = document.getElementById("titleInput");
+    const captionInput = document.getElementById("captionInput");
+
+    const file = fileInput.files[0];
+    const title = titleInput.value || "Kenangan Baru";
+    const caption = captionInput.value || "Foto kenangan yang baru saja diunggah 💕";
+
+    if (!file) {
+      alert("Pilih file dulu ya!");
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("upload_preset", "kenangan_foto");
+    const cloudName = "dgd4dxjpv";
+
+    try {
+      const res = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
+        method: "POST",
+        body: formData
+      });
+
+      const data = await res.json();
+      const gallery = document.getElementById("imageGallery");
+      const photoCard = document.createElement("div");
+      photoCard.classList.add("photo-card");
+      photoCard.onclick = () => openModal(data.secure_url);
+
+      photoCard.innerHTML = `
+        <img src="${data.secure_url}" alt="${title}">
+        <div class="photo-caption">
+          <h3>${title}</h3>
+          <p>${caption}</p>
+        </div>
+      `;
+
+      gallery.prepend(photoCard);
+
+      fileInput.value = "";
+      titleInput.value = "";
+      captionInput.value = "";
+
+    } catch (err) {
+      console.error("Upload gagal:", err);
+      alert("Upload gagal. Cek koneksi atau konfigurasi Cloudinary.");
+    }
+  }
 </script>
 
 </body>
