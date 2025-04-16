@@ -73,6 +73,10 @@
     </form>
   </div>
 
+  <!-- 🎵 Audio Player -->
+  <audio id="bg-music" src="bungaabadi.mp3" loop></audio>
+
+  <!-- 🧠 Script Login & Autoplay Musik -->
   <script>
     function handleLogin(event) {
       event.preventDefault();
@@ -80,14 +84,22 @@
       const password = document.getElementById('password').value;
       const errorMsg = document.getElementById('errorMsg');
 
-      // Contoh login sederhana
       if (username === "arta" && password === "221016") {
-        // Redirect ke halaman utama
-        window.location.href = "home.html"; // Ganti dengan halaman utama kamu
+        window.location.href = "home.html"; // ganti sesuai halaman utama kamu
       } else {
         errorMsg.style.display = "block";
       }
     }
+
+    // 🎶 Play musik setelah tap pertama
+    document.addEventListener('DOMContentLoaded', function () {
+      const audio = document.getElementById('bg-music');
+      function startMusic() {
+        audio.play().catch(e => console.log('Autoplay gagal:', e));
+        document.removeEventListener('click', startMusic);
+      }
+      document.addEventListener('click', startMusic);
+    });
   </script>
 </body>
 </html>
