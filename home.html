@@ -75,7 +75,6 @@
       color: #aa4f79;
     }
 
-    /* Modal Styles */
     .modal {
       display: none;
       position: fixed;
@@ -144,7 +143,6 @@
       transform: scale(1.05);
     }
 
-    /* Animations */
     @keyframes fadeIn {
       from {opacity: 0;}
       to {opacity: 1;}
@@ -154,9 +152,64 @@
       from {transform: scale(0.8);}
       to {transform: scale(1);}
     }
+
+    /* Love Rain Style */
+    .love-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      overflow: hidden;
+      z-index: 9999;
+    }
+
+    .love {
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      background-color: #ff4da6;
+      transform: rotate(45deg);
+      animation: fall 5s linear infinite;
+    }
+
+    .love::before,
+    .love::after {
+      content: '';
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      background-color: #ff4da6;
+      border-radius: 50%;
+    }
+
+    .love::before {
+      top: -10px;
+      left: 0;
+    }
+
+    .love::after {
+      left: -10px;
+      top: 0;
+    }
+
+    @keyframes fall {
+      0% {
+        transform: translateY(-100px) rotate(45deg);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(100vh) rotate(45deg);
+        opacity: 0;
+      }
+    }
   </style>
 </head>
 <body>
+
+<!-- Love Container (Hujan Love) -->
+<div class="love-container"></div>
 
 <!-- Musik Latar -->
 <audio autoplay loop hidden>
@@ -170,6 +223,7 @@
 </header>
 
 <section class="gallery">
+  <!-- Foto-foto -->
   <div class="photo-card" onclick="openModal('foto1.jpg')">
     <img src="foto1.jpg" alt="Foto 1">
     <div class="photo-caption">
@@ -177,7 +231,6 @@
       <p>Hari itu hujan, tapi kamu datang membawa hangat.</p>
     </div>
   </div>
-
   <div class="photo-card" onclick="openModal('foto2.jpg')">
     <img src="foto2.jpg" alt="Foto 2">
     <div class="photo-caption">
@@ -185,7 +238,6 @@
       <p>mau foto boot dulu .</p>
     </div>
   </div>
-
   <div class="photo-card" onclick="openModal('foto3.jpg')">
     <img src="foto3.jpg" alt="Foto 3">
     <div class="photo-caption">
@@ -193,7 +245,6 @@
       <p>Pantai, senja, dan genggaman tanganmu.</p>
     </div>
   </div>
-
   <div class="photo-card" onclick="openModal('foto4.jpg')">
     <img src="foto4.jpg" alt="Foto 4">
     <div class="photo-caption">
@@ -221,17 +272,32 @@
     const modal = document.getElementById("myModal");
     const modalImg = document.getElementById("modal-img");
     const downloadLink = document.getElementById("download-link");
-    
+
     modal.classList.add("show");
     modalImg.src = imgSrc;
     downloadLink.href = imgSrc;
-    downloadLink.download = imgSrc.split('/').pop(); // otomatis pakai nama file
+    downloadLink.download = imgSrc.split('/').pop();
   }
 
   function closeModal() {
     const modal = document.getElementById("myModal");
     modal.classList.remove("show");
   }
+
+  // Script Hujan Love
+  function createLove() {
+    const love = document.createElement('div');
+    love.classList.add('love');
+    love.style.left = Math.random() * 100 + 'vw';
+    love.style.animationDuration = (Math.random() * 3 + 3) + 's';
+    document.querySelector('.love-container').appendChild(love);
+
+    setTimeout(() => {
+      love.remove();
+    }, 5000);
+  }
+
+  setInterval(createLove, 300);
 </script>
 
 </body>
