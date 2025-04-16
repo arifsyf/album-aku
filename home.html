@@ -4,6 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Kenangan Kita</title>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
   <style>
     body {
       margin: 0;
@@ -177,9 +179,12 @@
 
 <div class="love-container"></div>
 
-<audio autoplay loop hidden>
+<audio id="bg-music" loop>
   <source src="bunga-abadi.mp3" type="audio/mpeg">
 </audio>
+<div style="text-align:center; margin-top: 10px">
+  <button onclick="document.getElementById('bg-music').play()" style="background: #ff69b4; color: white; padding: 10px 20px; border: none; border-radius: 8px;">Mainkan Lagu 🎵</button>
+</div>
 
 <header>
   <h1>Kenangan Manis Bersamamu 💕</h1>
@@ -188,78 +193,31 @@
 
 <section style="text-align:center; padding: 20px;">
   <h2>Upload Foto Kenangan 💗</h2>
-  <input type="file" id="uploadInput" /><br><br>
+  <input type="file" id="uploadInput" accept="image/*" /><br><br>
   <input type="text" id="titleInput" placeholder="Judul Foto" style="padding: 8px; width: 200px; border-radius: 8px; border: 1px solid #ccc;"><br><br>
   <textarea id="captionInput" placeholder="Ceritakan sedikit tentang foto ini..." style="padding: 8px; width: 300px; height: 80px; border-radius: 8px; border: 1px solid #ccc;"></textarea><br><br>
   <button onclick="uploadToCloudinary()" style="background:#ff69b4;color:white;border:none;padding:10px 20px;border-radius:8px;cursor:pointer;">Upload Foto</button>
 </section>
 
-<section class="gallery" id="imageGallery">
-  <div class="photo-card" onclick="openModal('foto1.jpg')">
-    <img src="foto1.jpg" alt="Foto 1">
-    <div class="photo-caption">
-      <h3>Awal Bertemu</h3>
-      <p>Hari itu hujan, tapi kamu datang membawa hangat.</p>
-    </div>
-  </div>
-  <div class="photo-card" onclick="openModal('foto2.jpg')">
-    <img src="foto2.jpg" alt="Foto 2">
-    <div class="photo-caption">
-      <h3>Kencan Pertama</h3>
-      <p>mau foto boot dulu.</p>
-    </div>
-  </div>
-  <div class="photo-card" onclick="openModal('foto3.jpg')">
-    <img src="foto3.jpg" alt="Foto 3">
-    <div class="photo-caption">
-      <h3>Liburan Bersama</h3>
-      <p>Pantai, senja, dan genggaman tanganmu.</p>
-    </div>
-  </div>
-  <div class="photo-card" onclick="openModal('foto4.jpg')">
-    <img src="foto4.jpg" alt="Foto 4">
-    <div class="photo-caption">
-      <h3>Surprise Ulang Tahun</h3>
-      <p>Senyummu waktu itu, tak pernah kulupakan.</p>
-    </div>
-  </div>
-</section>
-
-<div id="myModal" class="modal" onclick="closeModal()">
-  <div class="modal-content" onclick="event.stopPropagation()">
-    <span class="close" onclick="closeModal()">&times;</span>
-    <img id="modal-img" src="" alt="Zoom Foto">
-    <a id="download-link" class="download-btn" download>Download Foto</a>
-  </div>
-</div>
+<section class="gallery" id="imageGallery"></section>
 
 <footer>
   Dibuat dengan cinta 💗 oleh Kita Berdua | © 2025
 </footer>
 
 <script>
-  function openModal(imgSrc) {
-    const modal = document.getElementById("myModal");
-    const modalImg = document.getElementById("modal-img");
-    const downloadLink = document.getElementById("download-link");
-    modal.classList.add("show");
-    modalImg.src = imgSrc;
-    downloadLink.href = imgSrc;
-    downloadLink.download = imgSrc.split('/').pop();
-  }
-  function closeModal() {
-    document.getElementById("myModal").classList.remove("show");
-  }
+  const firebaseConfig = {
+    apiKey: "AIzaSyBG1-R0sYyxwK6dv7xXEEQQNPH6z_utVos",
+    authDomain: "albumakuu.firebaseapp.com",
+    projectId: "albumakuu",
+    storageBucket: "albumakuu.firebasestorage.app",
+    messagingSenderId: "757106483844",
+    appId: "1:757106483844:web:cb8349d33b8aed2c4b18d1",
+    measurementId: "G-EPYMNR732Y"
+  };
 
-  function createLove() {
-    const love = document.createElement('div');
-    love.classList.add('love');
-    love.style.left = Math.random() * 100 + 'vw';
-    love.style.animationDuration = (Math.random() * 3 + 3) + 's';
-    document.querySelector('.love-container').appendChild(love);
-    setTimeout(() => love.remove(), 6000);
-  }
-  setInterval(createLove, 600);
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
 
   async function uploadToCloudinary() {
     const fileInput = document.getElementById("uploadInput");
@@ -287,20 +245,15 @@
       });
 
       const data = await res.json();
-      const gallery = document.getElementById("imageGallery");
-      const photoCard = document.createElement("div");
-      photoCard.classList.add("photo-card");
-      photoCard.onclick = () => openModal(data.secure_url);
 
-      photoCard.innerHTML = `
-        <img src="${data.secure_url}" alt="${title}">
-        <div class="photo-caption">
-          <h3>${title}</h3>
-          <p>${caption}</p>
-        </div>
-      `;
+      await db.collection("galeri").add({
+        title,
+        caption,
+        url: data.secure_url,
+        timestamp: new Date()
+      });
 
-      gallery.prepend(photoCard);
+      loadGallery();
 
       fileInput.value = "";
       titleInput.value = "";
@@ -311,7 +264,62 @@
       alert("Upload gagal. Cek koneksi atau konfigurasi Cloudinary.");
     }
   }
+
+  async function loadGallery() {
+    const gallery = document.getElementById("imageGallery");
+    gallery.innerHTML = "";
+    const snapshot = await db.collection("galeri").orderBy("timestamp", "desc").get();
+    snapshot.forEach(doc => {
+      const data = doc.data();
+      const photoCard = document.createElement("div");
+      photoCard.className = "photo-card";
+      photoCard.onclick = () => openModal(data.url);
+
+      photoCard.innerHTML = `
+        <img src="${data.url}" alt="${data.title}">
+        <div class="photo-caption">
+          <h3>${data.title}</h3>
+          <p>${data.caption}</p>
+        </div>
+      `;
+      gallery.appendChild(photoCard);
+    });
+  }
+
+  function openModal(imgSrc) {
+    const modal = document.getElementById("myModal");
+    const modalImg = document.getElementById("modal-img");
+    const downloadLink = document.getElementById("download-link");
+    modal.classList.add("show");
+    modalImg.src = imgSrc;
+    downloadLink.href = imgSrc;
+    downloadLink.download = imgSrc.split('/').pop();
+  }
+
+  function closeModal() {
+    document.getElementById("myModal").classList.remove("show");
+  }
+
+  function createLove() {
+    const love = document.createElement('div');
+    love.classList.add('love');
+    love.style.left = Math.random() * 100 + 'vw';
+    love.style.animationDuration = (Math.random() * 3 + 3) + 's';
+    document.querySelector('.love-container').appendChild(love);
+    setTimeout(() => love.remove(), 6000);
+  }
+  setInterval(createLove, 600);
+
+  loadGallery();
 </script>
+
+<div id="myModal" class="modal" onclick="closeModal()">
+  <div class="modal-content" onclick="event.stopPropagation()">
+    <span class="close" onclick="closeModal()">&times;</span>
+    <img id="modal-img" src="" alt="Zoom Foto">
+    <a id="download-link" class="download-btn" download>Download Foto</a>
+  </div>
+</div>
 
 </body>
 </html>
