@@ -8,6 +8,21 @@
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
   <style>
 
+html, body, * {
+  scroll-behavior: auto !important;
+  animation: none !important;
+  transition: none !important;
+  transform: none !important;
+  will-change: auto !important;
+  overscroll-behavior: none !important;
+  overflow-anchor: none !important;
+}
+
+html, body {
+  min-height: 100vh !important;
+  height: auto !important;
+}
+
 html, body {
   scroll-behavior: auto !important;
   overscroll-behavior: none;
@@ -100,7 +115,6 @@ html, body {
       background-color: rgba(0,0,0,0.7);
       justify-content: center;
       align-items: center;
-      animation: fadeIn 0.4s ease;
     }
     .modal.show {
       display: flex;
@@ -109,17 +123,12 @@ html, body {
       position: relative;
       max-width: 90%;
       max-height: 90%;
-      animation: zoomIn 0.3s ease;
     }
     .modal-content img {
       width: 100%;
       height: auto;
       border-radius: 10px;
       box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
-      transition: transform 0.3s ease;
-    }
-    .modal-content img:hover {
-      transform: scale(1.02);
     }
     .close {
       position: absolute;
@@ -128,10 +137,6 @@ html, body {
       font-size: 30px;
       color: white;
       cursor: pointer;
-      transition: transform 0.2s ease;
-    }
-    .close:hover {
-      transform: scale(1.2);
     }
     .download-btn {
       position: absolute;
@@ -145,11 +150,6 @@ html, body {
       text-decoration: none;
       font-weight: bold;
       box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-      transition: background 0.3s ease, transform 0.3s ease;
-    }
-    .download-btn:hover {
-      background: #ff1493;
-      transform: scale(1.05);
     }
     .love-container {
       position: fixed;
@@ -167,7 +167,6 @@ html, body {
       height: 25px;
       background-color: #ff4da6;
       transform: rotate(45deg);
-      animation: fall 5s linear forwards;
     }
     .love::before,
     .love::after {
@@ -186,27 +185,6 @@ html, body {
       left: -12px;
       top: 0;
     }
-    @keyframes fall {
-      0% { transform: translateY(-100px) rotate(45deg); opacity: 1; }
-      100% { transform: translateY(100vh) rotate(45deg); opacity: 0; }
-    }
-    .moving-text {
-      position: absolute;
-      top: 20px;
-      left: -100%;
-      white-space: nowrap;
-      font-size: 24px;
-      font-weight: bold;
-      color: #ff66a3;
-      text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
-      animation: scrollText 20s linear infinite;
-      z-index: 1;
-      pointer-events: none;
-    }
-    @keyframes scrollText {
-      0% { left: -100%; }
-      100% { left: 100%; }
-    }
     .aurora {
       position: absolute;
       top: 0;
@@ -215,19 +193,8 @@ html, body {
       height: 100%;
       background: linear-gradient(120deg, rgba(255,192,203,0.2), rgba(238,174,202,0.2), rgba(148,187,233,0.2));
       background-blend-mode: screen;
-      animation: auroraGlow 15s ease-in-out infinite;
       z-index: -1;
       pointer-events: none;
-    }
-    @keyframes auroraGlow {
-      0%, 100% {
-        transform: scale(1);
-        opacity: 0.3;
-      }
-      50% {
-        transform: scale(1.1);
-        opacity: 0.5;
-      }
     }
     .star {
       position: absolute;
@@ -236,14 +203,7 @@ html, body {
       background: radial-gradient(circle, #ffffff, #fce4ec, transparent);
       border-radius: 50%;
       box-shadow: 0 0 6px 2px rgba(255, 255, 255, 0.6);
-      animation: twinkle 3s infinite ease-in-out;
     }
-    @keyframes twinkle {
-      0%, 100% { opacity: 0.2; transform: scale(1); }
-      50% { opacity: 1; transform: scale(1.5); }
-    }
-  </style>
-  <style>
     .loading-overlay {
       display: none;
       position: fixed;
@@ -263,17 +223,6 @@ html, body {
       display: flex;
     }
   </style>
-
-  <!-- Script pencegah scroll auto balik -->
-  <script>
-    window.addEventListener("load", () => {
-      setTimeout(() => {
-        if (window.scrollY < 5) {
-          window.scrollTo(0, 1);
-        }
-      }, 100);
-    });
-  </script>
 </head>
 <body>
   <div class="loading-overlay" id="loadingOverlay">💗 Membuka Kenangan...</div>
@@ -282,22 +231,39 @@ html, body {
     <source src="bunga-abadi.mp3" type="audio/mpeg">
   </audio>
   <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      const overlay = document.getElementById("loadingOverlay");
-      overlay.classList.add("show");
+    window.addEventListener("load", () => {
       setTimeout(() => {
-        overlay.classList.remove("show");
-      }, 1800);
-      const audio = document.getElementById("bg-music");
-      audio.volume = 0.5;
-      if (localStorage.getItem("autoPlayMusic") === "yes") {
-        audio.play().then(() => {
-          localStorage.removeItem("autoPlayMusic");
-        }).catch(err => {
-          console.warn("Autoplay gagal:", err);
-        });
-      }
+        if (window.scrollY < 5) {
+          window.scrollTo(0, 1); // Cegah kembali ke atas otomatis
+        }
+      }, 100);
     });
+  </script>
+  
+  </head>
+  <body>
+  <div class="loading-overlay" id="loadingOverlay">💗 Membuka Kenangan...</div>
+  <div class="moving-text">Kenangan Manis Kita 💖</div>
+  <audio id="bg-music" autoplay loop>
+    <source src="bunga-abadi.mp3" type="audio/mpeg">
+  </audio>
+  <script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const overlay = document.getElementById("loadingOverlay");
+    overlay.classList.add("show");
+    setTimeout(() => {
+      overlay.classList.remove("show");
+    }, 1800);
+    const audio = document.getElementById("bg-music");
+    audio.volume = 0.5;
+    if (localStorage.getItem("autoPlayMusic") === "yes") {
+      audio.play().then(() => {
+        localStorage.removeItem("autoPlayMusic");
+      }).catch(err => {
+        console.warn("Autoplay gagal:", err);
+      });
+    }
+  });
   </script>
   
   <div class="love-container"></div>
@@ -316,13 +282,13 @@ html, body {
     </div>
     <div id="spinner" style="display:none;">⏳ Uploading...</div>
   </section>
-  
   <section class="gallery" id="imageGallery"></section>
-  
+
   <footer>
     Dibuat dengan cinta 💗 oleh Kita Berdua | © 2025
   </footer>
   
+  <!-- Modal untuk zoom foto -->
   <div id="myModal" class="modal" onclick="closeModal()">
     <div class="modal-content" onclick="event.stopPropagation()">
       <span class="close" onclick="closeModal()">&times;</span>
@@ -469,4 +435,4 @@ html, body {
   </script>
   </body>
   </html>
-  
+    
