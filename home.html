@@ -7,6 +7,15 @@
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
   <style>
+
+html, body {
+  scroll-behavior: auto !important;
+  overscroll-behavior: none;
+  position: relative;
+  min-height: 100%;
+  overflow-anchor: none;
+}
+
     body {
       background: linear-gradient(120deg, #ffe6f0 0%, #ffd6ec 50%, #fff0f8 100%) fixed;
       background-size: cover;
@@ -255,7 +264,7 @@
     }
   </style>
 
-  <!-- Script tambahan untuk cegah scroll auto balik ke atas -->
+  <!-- Script pencegah scroll auto balik -->
   <script>
     window.addEventListener("load", () => {
       setTimeout(() => {
@@ -290,10 +299,12 @@
       }
     });
   </script>
+  
   <div class="love-container"></div>
   <div class="aurora"></div>
   <div id="cloud-container"></div>
   <div id="star-container"></div>
+  
   <section style="text-align:center; padding: 20px;">
     <h2>Upload Foto Kenangan 💗</h2>
     <input type="file" id="uploadInput" accept="image/*"><br><br>
@@ -312,7 +323,6 @@
     Dibuat dengan cinta 💗 oleh Kita Berdua | © 2025
   </footer>
   
-  <!-- Modal untuk zoom foto -->
   <div id="myModal" class="modal" onclick="closeModal()">
     <div class="modal-content" onclick="event.stopPropagation()">
       <span class="close" onclick="closeModal()">&times;</span>
