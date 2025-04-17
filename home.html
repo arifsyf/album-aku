@@ -11,7 +11,7 @@
       background: linear-gradient(120deg, #ffe6f0 0%, #ffd6ec 50%, #fff0f8 100%) fixed;
       background-size: cover;
       position: relative;
-      overflow: hidden;
+      overflow-x: hidden;
       margin: 0;
       padding: 0;
       font-family: 'Segoe UI', sans-serif;
@@ -177,90 +177,62 @@
       top: 0;
     }
     @keyframes fall {
-      0% {
-        transform: translateY(-100px) rotate(45deg);
-        opacity: 1;
+      0% { transform: translateY(-100px) rotate(45deg); opacity: 1; }
+      100% { transform: translateY(100vh) rotate(45deg); opacity: 0; }
+    }
+    .moving-text {
+      position: absolute;
+      top: 20px;
+      left: -100%;
+      white-space: nowrap;
+      font-size: 24px;
+      font-weight: bold;
+      color: #ff66a3;
+      text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
+      animation: scrollText 20s linear infinite;
+      z-index: 1;
+      pointer-events: none;
+    }
+    @keyframes scrollText {
+      0% { left: -100%; }
+      100% { left: 100%; }
+    }
+    .aurora {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(120deg, rgba(255,192,203,0.2), rgba(238,174,202,0.2), rgba(148,187,233,0.2));
+      background-blend-mode: screen;
+      animation: auroraGlow 15s ease-in-out infinite;
+      z-index: -1;
+      pointer-events: none;
+    }
+    @keyframes auroraGlow {
+      0%, 100% {
+        transform: scale(1);
+        opacity: 0.3;
       }
-      100% {
-        transform: translateY(100vh) rotate(45deg);
-        opacity: 0;
+      50% {
+        transform: scale(1.1);
+        opacity: 0.5;
       }
     }
-    #progressContainer, #spinner {
-      text-align: center;
-      margin-top: 10px;
+    .star {
+      position: absolute;
+      width: 3px;
+      height: 3px;
+      background: radial-gradient(circle, #ffffff, #fce4ec, transparent);
+      border-radius: 50%;
+      box-shadow: 0 0 6px 2px rgba(255, 255, 255, 0.6);
+      animation: twinkle 3s infinite ease-in-out;
     }
-  
-
-  50% { transform: scale(1.1); }
-  100% { transform: scale(1); }
-}
-  .star {
-  position: absolute;
-  width: 3px;
-  height: 3px;
-  background: radial-gradient(circle, #ffffff, #fce4ec, transparent);
-  border-radius: 50%;
-  box-shadow: 0 0 6px 2px rgba(255, 255, 255, 0.6);
-  animation: twinkle 3s infinite ease-in-out;
-}
-  @keyframes twinkle {
-    0%, 100% { opacity: 0.2; transform: scale(1); }
-    50% { opacity: 1; transform: scale(1.5); }
-  }
-  .cloud {
-    position: absolute;
-    background: rgba(255, 255, 255, 0.3);
-    border-radius: 50%;
-    animation: floatCloud 60s linear infinite;
-  }
-  @keyframes floatCloud {
-    0% { transform: translateX(-200px); opacity: 0.4; }
-    50% { opacity: 0.7; }
-    100% { transform: translateX(100vw); opacity: 0.4; }
-  }
-  .aurora {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(120deg, rgba(255,192,203,0.2), rgba(238,174,202,0.2), rgba(148,187,233,0.2));
-  background-blend-mode: screen;
-  animation: auroraGlow 15s ease-in-out infinite;
-  z-index: -1;
-  pointer-events: none;
-}
-  @keyframes auroraGlow {
-  0%, 100% {
-    transform: scale(1);
-    opacity: 0.3;
-  }
-  50% {
-    transform: scale(1.1);
-    opacity: 0.5;
-  }
-}
-    50% { opacity: 0.4; }
-  }
-  .moving-text {
-    position: absolute;
-    top: 20px;
-    left: -100%;
-    white-space: nowrap;
-    font-size: 24px;
-    font-weight: bold;
-    color: #ff66a3;
-    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
-    animation: scrollText 20s linear infinite;
-    z-index: 1;
-    pointer-events: none;
-  }
-  @keyframes scrollText {
-    0% { left: -100%; }
-    100% { left: 100%; }
-  }
-</style>
+    @keyframes twinkle {
+      0%, 100% { opacity: 0.2; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.5); }
+    }
+  </style>
   <style>
     .loading-overlay {
       display: none;
@@ -291,41 +263,25 @@
 <script>
 document.addEventListener("DOMContentLoaded", () => {
   const overlay = document.getElementById("loadingOverlay");
-overlay.classList.add("show");
-setTimeout(() => {
-  overlay.classList.remove("show");
-}, 1800);
+  overlay.classList.add("show");
+  setTimeout(() => {
+    overlay.classList.remove("show");
+  }, 1800);
   const audio = document.getElementById("bg-music");
-audio.volume = 0.5;
-if (localStorage.getItem("autoPlayMusic") === "yes") {
-  audio.play().then(() => {
-    localStorage.removeItem("autoPlayMusic");
-  }).catch(err => {
-    console.warn("Autoplay gagal:", err);
-  });
-}
-  });
+  audio.volume = 0.5;
+  if (localStorage.getItem("autoPlayMusic") === "yes") {
+    audio.play().then(() => {
+      localStorage.removeItem("autoPlayMusic");
+    }).catch(err => {
+      console.warn("Autoplay gagal:", err);
+    });
+  }
+});
 </script>
-
-
 <div class="love-container"></div>
 <div class="aurora"></div>
 <div id="cloud-container"></div>
 <div id="star-container"></div>
-
-
-  
-
-</div>
-
-
-
-  
-
-
-
-<!-- Semua fitur telah digabungkan. Scroll ke bawah untuk lihat script yang sudah ditambahkan -->
-
 <section style="text-align:center; padding: 20px;">
   <h2>Upload Foto Kenangan 💗</h2>
   <input type="file" id="uploadInput" accept="image/*"><br><br>
@@ -344,7 +300,6 @@ if (localStorage.getItem("autoPlayMusic") === "yes") {
   Dibuat dengan cinta 💗 oleh Kita Berdua | © 2025
 </footer>
 
-<!-- Modal untuk zoom foto -->
 <div id="myModal" class="modal" onclick="closeModal()">
   <div class="modal-content" onclick="event.stopPropagation()">
     <span class="close" onclick="closeModal()">&times;</span>
@@ -354,7 +309,6 @@ if (localStorage.getItem("autoPlayMusic") === "yes") {
 </div>
 
 <script>
-  // Konfigurasi Firebase
   const firebaseConfig = {
     apiKey: "AIzaSyBG1-R0sYyxwK6dv7xXEEQQNPH6z_utVos",
     authDomain: "albumakuu.firebaseapp.com",
@@ -366,7 +320,6 @@ if (localStorage.getItem("autoPlayMusic") === "yes") {
   firebase.initializeApp(firebaseConfig);
   const db = firebase.firestore();
 
-  // Kompres gambar menggunakan canvas
   async function compressImage(file, maxWidth = 1024, quality = 0.7) {
     return new Promise((resolve) => {
       const reader = new FileReader();
@@ -389,7 +342,6 @@ if (localStorage.getItem("autoPlayMusic") === "yes") {
     });
   }
 
-  // Upload gambar
   async function uploadFoto() {
     const fileInput = document.getElementById("uploadInput");
     const titleInput = document.getElementById("titleInput");
@@ -435,22 +387,6 @@ if (localStorage.getItem("autoPlayMusic") === "yes") {
         document.getElementById("progressContainer").style.display = "none";
         document.getElementById("progressPercent").textContent = "0%";
         loadGallery();
-
-
-
-
-
-  
-
-  function createLove() {
-    const love = document.createElement('div');
-    love.classList.add('love');
-    love.style.left = Math.random() * 100 + 'vw';
-    love.style.animationDuration = (Math.random() * 3 + 3) + 's';
-    document.querySelector('.love-container').appendChild(love);
-    setTimeout(() => love.remove(), 6000);
-  }
-  setInterval(createLove, 600);
       } else {
         alert("Upload gagal.");
       }
@@ -459,7 +395,6 @@ if (localStorage.getItem("autoPlayMusic") === "yes") {
     xhr.send(formData);
   }
 
-  // Tampilkan galeri
   async function loadGallery() {
     const gallery = document.getElementById("imageGallery");
     gallery.innerHTML = "";
@@ -502,9 +437,12 @@ if (localStorage.getItem("autoPlayMusic") === "yes") {
     document.getElementById("download-link").href = src;
     modal.classList.add("show");
   }
+
   function closeModal() {
     document.getElementById("myModal").classList.remove("show");
   }
 
   loadGallery();
 </script>
+</body>
+</html>
