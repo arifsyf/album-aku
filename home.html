@@ -225,8 +225,7 @@ html, body {
   </style>
 </head>
 <body>
-  <div class="loading-overlay" id="loadingOverlay">💗 Membuka Kenangan...</div>
-  <div class="moving-text">Kenangan Manis Kita 💖</div>
+  <div class="loading-overlay" id="loadingOverlay">💗 Membuka Album Kenangan...</div>
   <audio id="bg-music" autoplay loop>
     <source src="bunga-abadi.mp3" type="audio/mpeg">
   </audio>
@@ -243,7 +242,7 @@ html, body {
   </head>
   <body>
   <div class="loading-overlay" id="loadingOverlay">💗 Membuka Kenangan...</div>
-  <div class="moving-text">Kenangan Manis Kita 💖</div>
+  <div class="moving-text">ARTA 💖</div>
   <audio id="bg-music" autoplay loop>
     <source src="bunga-abadi.mp3" type="audio/mpeg">
   </audio>
@@ -255,7 +254,7 @@ html, body {
       overlay.classList.remove("show");
     }, 1800);
     const audio = document.getElementById("bg-music");
-    audio.volume = 0.5;
+    audio.volume = 0.1;
     if (localStorage.getItem("autoPlayMusic") === "yes") {
       audio.play().then(() => {
         localStorage.removeItem("autoPlayMusic");
@@ -280,7 +279,7 @@ html, body {
     <div id="progressContainer" style="display:none;">
       <p>Upload: <span id="progressPercent">0%</span></p>
     </div>
-    <div id="spinner" style="display:none;">⏳ Uploading...</div>
+    <div id="spinner" style="display:none;">⏳ Sedang Upload sabar ya sayang...</div>
   </section>
   <section class="gallery" id="imageGallery"></section>
 
