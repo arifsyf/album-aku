@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Login - Kenangan Manis</title>
   <style>
     body {
@@ -15,6 +15,7 @@
       align-items: center;
       height: 100vh;
     }
+
     .login-container {
       background-color: #fff0f5;
       padding: 40px;
@@ -23,11 +24,13 @@
       width: 300px;
       text-align: center;
     }
+
     .login-container h2 {
       color: #d94f92;
       margin-bottom: 20px;
     }
-    input[type="email"], input[type="password"] {
+
+    input[type="text"], input[type="password"] {
       width: 100%;
       padding: 12px 10px;
       margin: 10px 0;
@@ -35,7 +38,8 @@
       border-radius: 10px;
       background-color: #fff;
     }
-    button {
+
+    input[type="submit"] {
       background-color: #ff80b3;
       color: white;
       border: none;
@@ -44,81 +48,54 @@
       border-radius: 10px;
       cursor: pointer;
       font-weight: bold;
-      margin-top: 10px;
+      transition: background 0.3s;
     }
-    button:hover {
+
+    input[type="submit"]:hover {
       background-color: #ff4d94;
     }
+
     .error-message {
       color: #d94f4f;
       margin-top: 10px;
+      display: none;
     }
   </style>
-  <!-- Firebase -->
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
-  <script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyBG1-R0sYyxwK6dv7xXEEQQNPH6z_utVos",
-      authDomain: "albumakuu.firebaseapp.com",
-      projectId: "albumakuu",
-      storageBucket: "albumakuu.appspot.com",
-      messagingSenderId: "757106483844",
-      appId: "1:757106483844:web:cb8349d33b8aed2c4b18d1"
-    };
-    firebase.initializeApp(firebaseConfig);
-  </script>
 </head>
 <body>
   <div class="login-container">
-    <h2>Masuk ke Kenangan Manis 💖</h2>
-    <input type="email" id="email" placeholder="Email" required />
-    <input type="password" id="password" placeholder="Password" required />
-    <button onclick="login()">Login</button>
-    <button onclick="signup()">Daftar</button>
-    <p id="auth-message" class="error-message"></p>
+    <h2>Masuk duluu</h2>
+    <form onsubmit="return handleLogin(event)">
+      <input type="text" id="username" placeholder="Nama Pengguna" required />
+      <input type="password" id="password" placeholder="Kata Sandi" required />
+      <input type="submit" value="Masuk" />
+      <p class="error-message" id="errorMsg">Nama pengguna atau kata sandi salah.</p>
+    </form>
   </div>
 
+  <!-- 🎵 Audio Player -->
   <audio id="bg-music" src="bungaabadi.mp3" loop></audio>
 
+  <!-- 🧠 Script Login & Autoplay Musik -->
   <script>
-    // Login
-    function login() {
-      const email = document.getElementById('email').value;
+    function handleLogin(event) {
+      event.preventDefault();
+      const username = document.getElementById('username').value;
       const password = document.getElementById('password').value;
-      const msg = document.getElementById('auth-message');
+      const errorMsg = document.getElementById('errorMsg');
 
-      firebase.auth().signInWithEmailAndPassword(email, password)
-        .then(() => {
-          msg.textContent = "";
-          localStorage.setItem("autoPlayMusic", "yes");
-          window.location.href = "home.html";
-        })
-        .catch(error => {
-          msg.textContent = error.message;
-        });
+      if (username === "arta" && password === "221016") {
+        window.location.href = "home.html"; // ganti sesuai halaman utama kamu
+      } else {
+        errorMsg.style.display = "block";
+      }
     }
 
-    // Signup
-    function signup() {
-      const email = document.getElementById('email').value;
-      const password = document.getElementById('password').value;
-      const msg = document.getElementById('auth-message');
-
-      firebase.auth().createUserWithEmailAndPassword(email, password)
-        .then(() => {
-          msg.textContent = "Berhasil daftar! Silakan login.";
-        })
-        .catch(error => {
-          msg.textContent = error.message;
-        });
-    }
-
-    // Musik autoplay
+    // 🎶 Play musik setelah tap pertama
     document.addEventListener('DOMContentLoaded', function () {
       const audio = document.getElementById('bg-music');
       function startMusic() {
-        audio.play().catch(() => {});
+        audio.play().catch(e => console.log('Autoplay gagal:', e));
         document.removeEventListener('click', startMusic);
       }
       document.addEventListener('click', startMusic);
