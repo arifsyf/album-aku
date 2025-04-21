@@ -5,59 +5,19 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Kenangan Kita</title>
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
   <style>
-
-html, body, * {
-  scroll-behavior: auto !important;
-  animation: none !important;
-  transition: none !important;
-  transform: none !important;
-  will-change: auto !important;
-  overscroll-behavior: none !important;
-  overflow-anchor: none !important;
-}
-
-html, body {
-  min-height: 100vh !important;
-  height: auto !important;
-}
-
-html, body {
-  scroll-behavior: auto !important;
-  overscroll-behavior: none;
-  position: relative;
-  min-height: 100%;
-  overflow-anchor: none;
-}
-
-    body {
-      background: linear-gradient(120deg, #ffe6f0 0%, #ffd6ec 50%, #fff0f8 100%) fixed;
-      background-size: cover;
-      position: relative;
-      overflow-x: hidden;
-      overflow-y: auto;
+    html, body {
+      background: linear-gradient(to right, #ffe6f0, #ffd6ec);
       margin: 0;
       padding: 0;
       font-family: 'Segoe UI', sans-serif;
-      background: linear-gradient(to right, #ffe6f0, #ffd6ec);
       color: #d94f92;
     }
-    header {
+    header, footer, .gallery, section {
       text-align: center;
-      padding: 30px 20px;
-    }
-    header h1 {
-      margin: 0;
-      font-size: 2em;
-    }
-    .gallery {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 20px;
       padding: 20px;
-      max-width: 1200px;
-      margin: auto;
     }
     .photo-card {
       background-color: #fff0f5;
@@ -67,28 +27,11 @@ html, body {
       transition: transform 0.3s ease;
       cursor: pointer;
     }
-    .photo-card:hover {
-      transform: scale(1.03);
-    }
-    .photo-card img {
-      width: 100%;
-      height: 200px;
-      object-fit: cover;
-    }
-    .photo-caption {
-      padding: 15px;
-      text-align: center;
-    }
-    .photo-caption h3 {
-      margin: 0;
-      font-size: 1.1em;
-      color: #c94c8e;
-    }
-    .photo-caption p {
-      font-size: 0.9em;
-      color: #8f3b6e;
-      margin-top: 5px;
-    }
+    .photo-card:hover { transform: scale(1.03); }
+    .photo-card img { width: 100%; height: 200px; object-fit: cover; }
+    .photo-caption { padding: 15px; }
+    .photo-caption h3 { margin: 0; font-size: 1.1em; color: #c94c8e; }
+    .photo-caption p { font-size: 0.9em; color: #8f3b6e; margin-top: 5px; }
     .photo-caption button {
       margin-top: 10px;
       background: #ff4d6d;
@@ -98,204 +41,43 @@ html, body {
       border-radius: 6px;
       cursor: pointer;
     }
-    footer {
-      text-align: center;
-      padding: 20px;
-      font-size: 0.9em;
-      color: #aa4f79;
-    }
-    .modal {
-      display: none;
+    .logout-btn {
       position: fixed;
-      z-index: 999;
-      left: 0;
-      top: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0,0,0,0.7);
-      justify-content: center;
-      align-items: center;
-    }
-    .modal.show {
-      display: flex;
-    }
-    .modal-content {
-      position: relative;
-      max-width: 90%;
-      max-height: 90%;
-    }
-    .modal-content img {
-      width: 100%;
-      height: auto;
-      border-radius: 10px;
-      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
-    }
-    .close {
-      position: absolute;
-      top: 10px;
+      top: 20px;
       right: 20px;
-      font-size: 30px;
+      background: #ff4d6d;
       color: white;
-      cursor: pointer;
-    }
-    .download-btn {
-      position: absolute;
-      bottom: 10px;
-      right: 20px;
-      background: #ff69b4;
-      color: white;
-      padding: 10px 15px;
       border: none;
-      border-radius: 8px;
-      text-decoration: none;
-      font-weight: bold;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-    }
-    .love-container {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-      overflow: hidden;
-      z-index: 9999;
-    }
-    .love {
-      position: absolute;
-      width: 25px;
-      height: 25px;
-      background-color: #ff4da6;
-      transform: rotate(45deg);
-    }
-    .love::before,
-    .love::after {
-      content: '';
-      position: absolute;
-      width: 25px;
-      height: 25px;
-      background-color: #ff4da6;
-      border-radius: 50%;
-    }
-    .love::before {
-      top: -12px;
-      left: 0;
-    }
-    .love::after {
-      left: -12px;
-      top: 0;
-    }
-    .aurora {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(120deg, rgba(255,192,203,0.2), rgba(238,174,202,0.2), rgba(148,187,233,0.2));
-      background-blend-mode: screen;
-      z-index: -1;
-      pointer-events: none;
-    }
-    .star {
-      position: absolute;
-      width: 3px;
-      height: 3px;
-      background: radial-gradient(circle, #ffffff, #fce4ec, transparent);
-      border-radius: 50%;
-      box-shadow: 0 0 6px 2px rgba(255, 255, 255, 0.6);
-    }
-    .loading-overlay {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(255, 255, 255, 0.8);
-      z-index: 9999;
-      justify-content: center;
-      align-items: center;
-      font-size: 24px;
-      color: #ff69b4;
-      font-weight: bold;
-    }
-    .loading-overlay.show {
-      display: flex;
+      padding: 10px 20px;
+      border-radius: 10px;
+      cursor: pointer;
     }
   </style>
 </head>
 <body>
-  <div class="loading-overlay" id="loadingOverlay">💗 Membuka Album Kenangan...</div>
+  <button class="logout-btn" onclick="logout()">Logout</button>
   <audio id="bg-music" autoplay loop>
     <source src="bunga-abadi.mp3" type="audio/mpeg">
   </audio>
-  <script>
-    window.addEventListener("load", () => {
-      setTimeout(() => {
-        if (window.scrollY < 5) {
-          window.scrollTo(0, 1); // Cegah kembali ke atas otomatis
-        }
-      }, 100);
-    });
-  </script>
-  
-  </head>
-  <body>
-  <div class="loading-overlay" id="loadingOverlay">💗 Membuka Kenangan...</div>
-  <div class="moving-text">ARTA 💖</div>
-  <audio id="bg-music" autoplay loop>
-    <source src="bunga-abadi.mp3" type="audio/mpeg">
-  </audio>
-  <script>
-  document.addEventListener("DOMContentLoaded", () => {
-    const overlay = document.getElementById("loadingOverlay");
-    overlay.classList.add("show");
-    setTimeout(() => {
-      overlay.classList.remove("show");
-    }, 1800);
-    const audio = document.getElementById("bg-music");
-    audio.volume = 0.1;
-    if (localStorage.getItem("autoPlayMusic") === "yes") {
-      audio.play().then(() => {
-        localStorage.removeItem("autoPlayMusic");
-      }).catch(err => {
-        console.warn("Autoplay gagal:", err);
-      });
-    }
-  });
-  </script>
-  
-  <div class="love-container"></div>
-  <div class="aurora"></div>
-  <div id="cloud-container"></div>
-  <div id="star-container"></div>
-  
-  <section style="text-align:center; padding: 20px;">
+
+  <section>
     <h2>Upload Foto Kenangan 💗</h2>
     <input type="file" id="uploadInput" accept="image/*"><br><br>
-    <input type="text" id="titleInput" placeholder="Judul Foto" style="padding: 8px; width: 200px; border-radius: 8px; border: 1px solid #ccc;"><br><br>
-    <textarea id="captionInput" placeholder="Ceritakan sedikit tentang foto ini..." style="padding: 8px; width: 300px; height: 80px; border-radius: 8px; border: 1px solid #ccc;"></textarea><br><br>
-    <button onclick="uploadFoto()" style="background:#ff69b4;color:white;border:none;padding:10px 20px;border-radius:8px;cursor:pointer;">Upload Foto</button>
+    <input type="text" id="titleInput" placeholder="Judul Foto"><br><br>
+    <textarea id="captionInput" placeholder="Ceritakan sedikit tentang foto ini..."></textarea><br><br>
+    <button onclick="uploadFoto()">Upload Foto</button>
     <div id="progressContainer" style="display:none;">
       <p>Upload: <span id="progressPercent">0%</span></p>
     </div>
     <div id="spinner" style="display:none;">⏳ Sedang Upload sabar ya sayang...</div>
   </section>
+
   <section class="gallery" id="imageGallery"></section>
 
   <footer>
     Dibuat dengan cinta 💗 oleh Kita Berdua | © 2025
   </footer>
-  
-  <!-- Modal untuk zoom foto -->
-  <div id="myModal" class="modal" onclick="closeModal()">
-    <div class="modal-content" onclick="event.stopPropagation()">
-      <span class="close" onclick="closeModal()">&times;</span>
-      <img id="modal-img" src="" alt="Zoom Foto">
-      <a id="download-link" class="download-btn" download>Download Foto</a>
-    </div>
-  </div>
-  
+
   <script>
     const firebaseConfig = {
       apiKey: "AIzaSyBG1-R0sYyxwK6dv7xXEEQQNPH6z_utVos",
@@ -307,29 +89,23 @@ html, body {
     };
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
-  
-    async function compressImage(file, maxWidth = 1024, quality = 0.7) {
-      return new Promise((resolve) => {
-        const reader = new FileReader();
-        reader.onload = (event) => {
-          const img = new Image();
-          img.onload = () => {
-            const canvas = document.createElement('canvas');
-            const scale = maxWidth / img.width;
-            canvas.width = maxWidth;
-            canvas.height = img.height * scale;
-            const ctx = canvas.getContext('2d');
-            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-            canvas.toBlob((blob) => {
-              resolve(new File([blob], file.name, { type: 'image/jpeg' }));
-            }, 'image/jpeg', quality);
-          };
-          img.src = event.target.result;
-        };
-        reader.readAsDataURL(file);
+    let currentUser = null;
+
+    firebase.auth().onAuthStateChanged(user => {
+      if (!user) {
+        window.location.href = "index.html";
+      } else {
+        currentUser = user;
+        loadGallery();
+      }
+    });
+
+    function logout() {
+      firebase.auth().signOut().then(() => {
+        window.location.href = "index.html";
       });
     }
-  
+
     async function uploadFoto() {
       const fileInput = document.getElementById("uploadInput");
       const titleInput = document.getElementById("titleInput");
@@ -338,30 +114,30 @@ html, body {
       const title = titleInput.value || "Kenangan Baru";
       const caption = captionInput.value || "Momen manis 💗";
       if (!file) return alert("Pilih file terlebih dahulu.");
-  
+
       document.getElementById("spinner").style.display = "block";
       document.getElementById("progressContainer").style.display = "block";
-  
-      const compressedFile = await compressImage(file);
+
       const formData = new FormData();
-      formData.append("file", compressedFile);
+      formData.append("file", file);
       formData.append("upload_preset", "kenangan_foto");
       const cloudName = "dgd4dxjpv";
-  
+
       const xhr = new XMLHttpRequest();
       xhr.open("POST", `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, true);
-  
+
       xhr.upload.onprogress = function (e) {
         if (e.lengthComputable) {
           const percent = Math.floor((e.loaded / e.total) * 100);
           document.getElementById("progressPercent").textContent = percent + "%";
         }
       };
-  
+
       xhr.onload = async function () {
         if (xhr.status === 200) {
           const data = JSON.parse(xhr.responseText);
           await db.collection("galeri").add({
+            uid: currentUser.uid,
             title,
             caption,
             url: data.secure_url,
@@ -379,59 +155,33 @@ html, body {
           alert("Upload gagal.");
         }
       };
+
       xhr.onerror = () => alert("Gagal mengupload ke Cloudinary");
       xhr.send(formData);
     }
-  
+
     async function loadGallery() {
+      if (!currentUser) return;
       const gallery = document.getElementById("imageGallery");
       gallery.innerHTML = "";
-      const snapshot = await db.collection("galeri").orderBy("timestamp", "desc").get();
+      const snapshot = await db.collection("galeri")
+        .where("uid", "==", currentUser.uid)
+        .orderBy("timestamp", "desc")
+        .get();
       snapshot.forEach(doc => {
         const data = doc.data();
         const card = document.createElement("div");
         card.className = "photo-card";
         card.innerHTML = `
-          <img src="${data.url}" alt="${data.title}" onclick="openModal('${data.url}')">
+          <img src="${data.url}" alt="${data.title}">
           <div class="photo-caption">
             <h3>${data.title}</h3>
             <p>${data.caption}</p>
-            <button onclick="hapusFoto('${doc.id}', '${data.public_id}')">Hapus</button>
           </div>
         `;
         gallery.appendChild(card);
       });
     }
-  
-    async function hapusFoto(docId, publicId) {
-      if (!confirm("Yakin ingin menghapus foto ini?")) return;
-      try {
-        await fetch("https://your-server.com/delete-cloudinary", {
-          method: "POST",
-          headers: {"Content-Type": "application/json"},
-          body: JSON.stringify({ public_id: publicId })
-        });
-        await db.collection("galeri").doc(docId).delete();
-        loadGallery();
-      } catch (err) {
-        alert("Gagal menghapus foto.");
-        console.error(err);
-      }
-    }
-  
-    function openModal(src) {
-      const modal = document.getElementById("myModal");
-      document.getElementById("modal-img").src = src;
-      document.getElementById("download-link").href = src;
-      modal.classList.add("show");
-    }
-  
-    function closeModal() {
-      document.getElementById("myModal").classList.remove("show");
-    }
-  
-    loadGallery();
   </script>
-  </body>
-  </html>
-    
+</body>
+</html>
